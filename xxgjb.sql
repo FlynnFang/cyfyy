@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `JCXX`;
 CREATE TABLE `JCXX` (
   `ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `CODE` varchar(32) NOT NULL COMMENT '受试者编号',
+  `NAME` varchar(255) DEFAULT NULL COMMENT '姓名',
   `HOSPITAL` varchar(32) NOT NULL COMMENT '归属医院',
   `ZJLX` varchar(4) NOT NULL COMMENT '证件类型',
   `ZJHM` varchar(255) NOT NULL COMMENT '证件号码',

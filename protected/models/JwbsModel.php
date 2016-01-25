@@ -9,6 +9,11 @@ class JwbsModel extends BaseModel
 {
 	private $TABLE_NAME = 'JWBS';
 
+	public function __construct()
+	{
+			parent::__construct($this->TABLE_NAME, __CLASS__);
+	}
+
 	public function getRowByCode($code)
 	{
 		$c =  new CDbCriteria();
@@ -16,20 +21,13 @@ class JwbsModel extends BaseModel
 		return $this->getRow($c);
 	}
 
-	public function getMaxPatientCode()
+	public function deleteByCode($code)
 	{
-		$c =  new CDbCriteria();
-		$c->order = ('CODE desc');
-		return $this->getRow($c);
+		$condition = "CODE=:code";
+		$params = array(
+			':code' => $code,
+		);
+		return $this->deleteAll($condition,$params);
 	}
-
-	// public function deleteByCode($code)
-	// {
-	// 	$condition = "patient_code=:code";
-	// 	$params = array(
-	// 		':code' => $code,
-	// 	);
-	// 	return $this->deleteAll($condition,$params);
-	// }
 
 }
