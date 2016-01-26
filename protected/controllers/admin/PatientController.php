@@ -31,7 +31,11 @@ class PatientController extends Admin
 		$mHospital = $this->_userInfo['hospital'];
 		$shareModel = new ShareModel();
 		$shareSet = $shareModel->getTargetSetByCode($mHospital);
-		$inArray = array_keys($shareSet);
+		$inArray = array();
+		if($shareSet){
+			$inArray = array_keys($shareSet);
+		}
+
 
 		$hospitalModel = new ConfigModel();
 		$allHos = $hospitalModel->getSetByType(Yii::app()->params['configType']['HOSPITAL']);
@@ -57,9 +61,9 @@ class PatientController extends Admin
 		//分页
 		$start = ($page - 1) * $this->_pagesize;
 
-		$patientModel = new PatientModel();
+		$jcxxModel = new JcxxModel();
 		//总数
-		$total = $patientModel->count($c);
+		$total = $jcxxModel->count($c);
 
 		//分页
 		$pages = new CPagination($total);
@@ -69,11 +73,9 @@ class PatientController extends Admin
 
 		$c->order = "create_time desc";
 
-
-		$list = $patientModel->getRows($c);
+		$list = $jcxxModel->findAll($c);
 		// var_dump($list);
 		// exit;
-
 		// var_dump($list, $total);exit;
 		$this->setPageTitle('病例列表');
 		$this->render('list', array('list'=>$list, 'pages'=>$pages, 'hospitals' =>$hospitals,'shareSet'=>$shareSet));
@@ -171,47 +173,127 @@ class PatientController extends Admin
 		$op = Yii::app()->request->getParam("op", '');
 		if (!$patient_code) {
 			// ID不存在
-
 			exit;
 		}
 
-		$patientModel = new PatientModel();
-		$patient = $patientModel->getRowByCode($patient_code);
+		$jcxxModel = new JcxxModel();
+		$jwbsModel = new JwbsModel();
+		$ywsModel = new YwsModel();
+		$sysjcModel = new SysjcModel();
+		$zyqkModel = new ZyqkModel();
+		$dbzModel = new DbzModel();
+		$sfzdsjModel = new SfzdsjModel();
 
-		$diagModel = new DiagnosticModel();
-		$diagnostic = $diagModel->getRowByCode($patient_code);
-		if ($diagnostic) {
-			$diagnostic['xztz_bw'] = explode(',',$diagnostic['xztz_bw']);
-			$diagnostic['xztz_sq'] = explode(',',$diagnostic['xztz_sq']);
-			$diagnostic['qtjx_ext'] = explode(',',$diagnostic['qtjx_ext']);
+		$patient = $jcxxModel->getRowByCode($patient_code);
+		$jwbs = $jwbsModel->getRowByCode($patient_code);
+		$yws = $ywsModel->getRowByCode($patient_code);
+		$sysjc = $sysjcModel->getRowByCode($patient_code);
+		$zyqk = $zyqkModel->getRowByCode($patient_code);
+		$dbz = $dbzModel->getRowByCode($patient_code);
+		$sfzdsj = $sfzdsjModel->getRowByCode($patient_code);
 
+		if ($jwbs) {
+			$jwbs['XYS_N'] = explode(',',$jwbs['XYS_N']);
+			$jwbs['XYS_ZT'] = explode(',',$jwbs['XYS_ZT']);
 		}
-		$operationModel = new OperationModel();
-		$operation = $operationModel->getRowByCode($patient_code);
-
+		if ($yws) {
+			$yws['ASPL_ZYQJ_WYHTYYY'] = explode(',',$yws['ASPL_ZYQJ_WYHTYYY']);
+			$yws['ASPL_ZYQJ_HYTY_YY'] = explode(',',$yws['ASPL_ZYQJ_HYTY_YY']);
+			$yws['LBGL_ZYQJ_WYHTYYY'] = explode(',',$yws['LBGL_ZYQJ_WYHTYYY']);
+			$yws['LBGL_ZYQJ_HYTY_YY'] = explode(',',$yws['LBGL_ZYQJ_HYTY_YY']);
+			$yws['ZSYKNYW_YWMC'] = explode(',',$yws['ZSYKNYW_YWMC']);
+			$yws['KFKNY_ZYQJ_YWZL'] = explode(',',$yws['KFKNY_ZYQJ_YWZL']);
+			$yws['KFKNY_ZYQJ_ZZ'] = explode(',',$yws['KFKNY_ZYQJ_ZZ']);
+			$yws['TTLYW_FHYW'] = explode(',',$yws['TTLYW_FHYW']);
+			$yws['JYYW_OPTION'] = explode(',',$yws['JYYW_OPTION']);
+		}
+		if ($zyqk) {
+			$zyqk['CYDY_OPTION'] = explode(',',$zyqk['CYDY_OPTION']);
+		}
+		if ($dbz) {
+			$dbz['XG_BW'] = explode(',',$dbz['XG_BW']);
+		}
 
 		$configModel = new ConfigModel();
-		$bw = $configModel->getSetByType(Yii::app()->params['configType']['xztz_bw']);
-		$sq = $configModel->getSetByType(Yii::app()->params['configType']['xztz_sq']);
-		$qtjx = $configModel->getSetByType(Yii::app()->params['configType']['qtjx']);
-		$xlsc = $configModel->getSetByType(Yii::app()->params['configType']['xlsc']);
-		$hospitals = $configModel->getSetByType(Yii::app()->params['configType']['hospital']);
-
+		$ZJLX = $configModel->getSetByType(Yii::app()->params['configType']['ZJLX']);
+		$XL = $configModel->getSetByType(Yii::app()->params['configType']['XL']);
+		$XYS = $configModel->getSetByType(Yii::app()->params['configType']['XYS']);
+		$YJS = $configModel->getSetByType(Yii::app()->params['configType']['YJS']);
+		$WLLX = $configModel->getSetByType(Yii::app()->params['configType']['YJS']);
+		$ZZLX = $configModel->getSetByType(Yii::app()->params['configType']['ZZLX']);
+		$TYYY = $configModel->getSetByType(Yii::app()->params['configType']['TYYY']);
+		$ZSYKNY = $configModel->getSetByType(Yii::app()->params['configType']['ZSYKNY']);
+		$ZSYKNY_JL = $configModel->getSetByType(Yii::app()->params['configType']['ZSYKNY_JL']);
+		$KFKNY = $configModel->getSetByType(Yii::app()->params['configType']['KFKNY']);
+		$KFKNYZZ = $configModel->getSetByType(Yii::app()->params['configType']['KFKNYZZ']);
+		$TTLYY = $configModel->getSetByType(Yii::app()->params['configType']['TTLYY']);
+		$JYYY  = $configModel->getSetByType(Yii::app()->params['configType']['JYYY']);
+		$GMBW  = $configModel->getSetByType(Yii::app()->params['configType']['GMBW']);
+		$XX  = $configModel->getSetByType(Yii::app()->params['configType']['XX']);
+		$CYZD  = $configModel->getSetByType(Yii::app()->params['configType']['CYZD']);
+		$CYDY  = $configModel->getSetByType(Yii::app()->params['configType']['CYDY']);
+		$XSBY  = $configModel->getSetByType(Yii::app()->params['configType']['XSBY']);
+		$XSLX  = $configModel->getSetByType(Yii::app()->params['configType']['XSLX']);
+		$XS = $configModel->getSetByType(Yii::app()->params['configType']['XS']);
+		$XGN = $configModel->getSetByType(Yii::app()->params['configType']['XGN']);
+		$KILLIP = $configModel->getSetByType(Yii::app()->params['configType']['KILLIP']);
+		$XGBW = $configModel->getSetByType(Yii::app()->params['configType']['XGBW']);
+		$XGLX  = $configModel->getSetByType(Yii::app()->params['configType']['XGLX']);
+		$GMBW  = $configModel->getSetByType(Yii::app()->params['configType']['GMBW']);
+		$SPLX  = $configModel->getSetByType(Yii::app()->params['configType']['SPLX']);
+		$ZRQBQYY  = $configModel->getSetByType(Yii::app()->params['configType']['ZRQBQYY']);
+		$QBQLX  = $configModel->getSetByType(Yii::app()->params['configType']['QBQLX']);
+		$SWFS  = $configModel->getSetByType(Yii::app()->params['configType']['SWFS']);
+		$ZZSS  = $configModel->getSetByType(Yii::app()->params['configType']['XSLX']);
+		$HOSPITAL  = $configModel->getSetByType(Yii::app()->params['configType']['HOSPITAL']);
 
 		$this->setPageTitle($op=='view'? '查看病历':'编辑病历');
 		$this->render('edit',array(
-			'patient' => $patient,
-			'diagnostic' => $diagnostic,
-			'operation' => $operation,
-			'nationality' => Yii::app()->params['nationality'],
+			'jcxx' => $patient,
+			'jwbs' => $jwbs,
+			'yws' => $yws,
+			'sysjc' => $sysjc,
+			'zyqk' => $zyqk,
+			'dbz' => $dbz,
+			'sfzdsj' => $sfzdsj,
 			'have' => Yii::app()->params['have'],
 			'boolean' => Yii::app()->params['boolean'],
 			'notquite' => Yii::app()->params['notquite'],
-			'bw' => $bw,
-			'sq'=> $sq,
-			'qtjx'=> $qtjx,
-			'xlsc'=> $xlsc,
-			'hospitals' => $hospitals,
+			'sex' => Yii::app()->params['sex'],
+			'cx' => Yii::app()->params['cx'],
+			'alive' => Yii::app()->params['alive'],
+			'stop' => Yii::app()->params['stop'],
+			'fhl' => Yii::app()->params['fhl'],
+			'ZJLX'=>$ZJLX,
+			'XL'=>$XL,
+			'XYS'=>$XYS,
+			'YJS'=>$YJS,
+			'WLLX'=>$WLLX,
+			'ZZLX'=>$ZZLX,
+			'TYYY'=>$TYYY,
+			'ZSYKNY'=>$ZSYKNY,
+			'ZSYKNY_JL'=>$ZSYKNY_JL,
+			'KFKNY'=>$KFKNY,
+			'KFKNYZZ'=>$KFKNYZZ,
+			'TTLYY'=>$TTLYY,
+			'JYYY'=>$JYYY,
+			'GMBW'=>$GMBW,
+			'XX'=>$XX,
+			'CYZD'=>$CYZD,
+			'CYDY'=>$CYDY,
+			'XSBY'=>$XSBY,
+			'XSLX'=>$XSLX,
+			'XS'=>$XS,
+			'XGN'=>$XGN,
+			'KILLIP'=>$KILLIP,
+			'XGBW'=>$XGBW,
+			'XGLX'=>$XGLX,
+			'SPLX'=>$SPLX,
+			'ZRQBQYY'=>$ZRQBQYY,
+			'QBQLX'=>$QBQLX,
+			'SWFS'=>$SWFS,
+			'ZZSS'=>$ZZSS,
+			'HOSPITAL'=>$HOSPITAL,
 			'op' => $op,
 			));
 	}
@@ -468,7 +550,7 @@ class PatientController extends Admin
 
 		$jcxxModel = new JcxxModel();
 
-		$jcxxModel['HOSPITAL'] = $HOSPITAL;
+		$jcxxModel['HOSPITAL'] = $this->_userInfo['hospital'];
 		$jcxxModel['NAME'] = $NAME;
 		$jcxxModel['ZJLX'] = $ZJLX;
 		$jcxxModel['ZJHM'] = $ZJHM;
@@ -491,8 +573,8 @@ class PatientController extends Admin
 		$jwbsModel = new JwbsModel();
 
 		$jwbsModel['XYS_OPTION'] = $XYS_OPTION;
-		$jwbsModel['XYS_N'] = $XYS_N ? join(',',$XYS_N) : '';
-		$jwbsModel['XYS_ZT'] = $XYS_ZT ? join(',',$XYS_ZT) : '';
+		$jwbsModel['XYS_N'] = $XYS_N;
+		$jwbsModel['XYS_ZT'] = $XYS_ZT;
 		$jwbsModel['YJS_OPTION'] = $YJS_OPTION;
 		$jwbsModel['YJS_N'] = $YJS_N;
 		$jwbsModel['YJS_PT'] = $YJS_PT;
@@ -723,81 +805,291 @@ class PatientController extends Admin
 
 		//更新
 		if ($op == 'edit' && $code && $jcxx = $jcxxModel->getRowByCode($code)) {
-
-			$jcxxModel['ID'] = $jcxx['ID'];
-			$jcxxModel['CODE'] = $jcxx['CODE'];
-			$jcxxModel['HOSPITAL'] = $jcxx['HOSPITAL'];
-			$jcxxModel['CREATE_TIME'] = $jcxx['CREATE_TIME'];
-			$jcxxModel->update();
-
-			if ($jwbs = $jwbsModel->getRowByCode($code))
-			{
-				$jwbsModel['ID'] = $jwbs['ID'];
-				$jwbsModel['CODE'] = $jwbs['CODE'];
-				$jwbsModel['CREATE_TIME'] = $jwbs['CREATE_TIME'];
-				$jwbsModel->update();
-			}else {
-				$jwbsModel['CODE'] = $jcxx['CODE'];
-				$jwbsModel->setIsNewRecord(1);
-				$jwbsModel->save();
+			if(!$jcxx){
+				$this->_output(-1, '该条数据不存在');
 			}
 
-			if ($yws = $ywsModel->getRowByCode($code))
-			{
-				$ywsModel['ID'] = $yws['ID'];
-				$ywsModel['CODE'] = $yws['CODE'];
-				$ywsModel['CREATE_TIME'] = $yws['CREATE_TIME'];
-				$ywsModel->update();
-			}else {
-				$ywsModel['CODE'] = $jcxx['CODE'];
-				$ywsModel->setIsNewRecord(1);
-				$ywsModel->save();
-			}
+			$transaction = Yii::app()->db->beginTransaction();
+			try {
+				$jcxx['NAME'] = $NAME;
+				$jcxx['ZJLX'] = $ZJLX;
+				$jcxx['ZJHM'] = $ZJHM;
+				$jcxx['ZYH'] = $ZYH;
+				$jcxx['RYSJ'] = $RYSJ;
+				$jcxx['CYSJ'] = $CYSJ;
+				$jcxx['SFRQ'] = $SFRQ;
+				$jcxx['SEX'] = $SEX;
+				$jcxx['AGE'] = $AGE;
+				$jcxx['HEIGHT'] = $HEIGHT;
+				$jcxx['WEIGHT'] = $WEIGHT;
+				$jcxx['BMI'] = $HEIGHT > 0 ? $WEIGHT/pow($HEIGHT/100,2) : 0;//体重(公斤) / 身高2(米2)
+				$jcxx['TEL1'] = $TEL1;
+				$jcxx['TEL2'] = $TEL2;
+				$jcxx['HOME_ADDR'] = $HOME_ADDR;
+				$jcxx['COMPANY_ADDR'] = $COMPANY_ADDR;
+				$jcxx['XL'] = $XL;
+				$jcxx->update();
 
-			if ($sysjc = $sysjcModel->getRowByCode($code)) {
-				$sysjcModel['ID'] = $sysjc['ID'];
-				$sysjcModel['CODE'] = $sysjc['CODE'];
-				$ywsModel['CREATE_TIME'] = $sysjc['CREATE_TIME'];
-				$sysjcModel->update();
-			}else {
-				$sysjcModel['CODE'] = $jcxx['CODE'];
-				$sysjcModel->setIsNewRecord(1);
-				$sysjcModel->save();
-			}
+				if ($jwbs = $jwbsModel->getRowByCode($code))
+				{
+					$jwbs['XYS_OPTION'] = $XYS_OPTION;
+					$jwbs['XYS_N'] = $XYS_N;
+					$jwbs['XYS_ZT'] = $XYS_ZT;
+					$jwbs['YJS_OPTION'] = $YJS_OPTION;
+					$jwbs['YJS_N'] = $YJS_N;
+					$jwbs['YJS_PT'] = $YJS_PT;
+					$jwbs['YJSFDH_OPTION'] = $YJSFDH_OPTION;
+					$jwbs['GXY_OPTION'] = $GXY_OPTION;
+					$jwbs['GXY_HBNS'] = $GXY_HBNS;
+					$jwbs['GXY_ZL_OPTION'] = $GXY_ZL_OPTION;
+					$jwbs['GXY_ZLYW'] = $GXY_ZLYW;
+					$jwbs['TLB_OPTION'] = $TLB_OPTION;
+					$jwbs['TLB_HBNS'] = $TLB_HBNS;
+					$jwbs['TLB_ZL_OPTION'] = $TLB_ZL_OPTION;
+					$jwbs['TLB_ZLYW'] = $TLB_ZLYW;
+					$jwbs['ZDXWL_OPTION'] = $ZDXWL_OPTION;
+					$jwbs['ZDXWL_LX'] = $ZDXWL_LX;
+					$jwbs['ZDXWL_HBN'] = $ZDXWL_HBN;
+					$jwbs['ZDXWL_ZL_OPTION'] = $ZDXWL_ZL_OPTION;
+					$jwbs['ZDXWL_YW'] = $ZDXWL_YW;
+					$jwbs['FC_OPTION'] = $FC_OPTION;
+					$jwbs['FC_HBN'] = $FC_HBN;
+					$jwbs['FC_ZL_OPTION'] = $FC_ZL_OPTION;
+					$jwbs['FC_YW'] = $FC_YW;
+					$jwbs['DZXNQXFZ_OPTION'] = $DZXNQXFZ_OPTION;
+					$jwbs['ZZ_OPTION'] = $ZZ_OPTION;
+					$jwbs['ZZ_LX'] = $ZZ_LX;
+					$jwbs['WZXGB_OPTION'] = $WZXGB_OPTION;
+					$jwbs['XJGS_OPTION'] = $XJGS_OPTION;
+					$jwbs['MXSGNBQ_OPTION'] = $MXSGNBQ_OPTION;
+					$jwbs['MXZSXFBJB_OPTION'] = $MXZSXFBJB_OPTION;
+					$jwbs['XHDCX_OPTION'] = $XHDCX_OPTION;
+					$jwbs['XLSJ_OPTION'] = $XLSJ_OPTION;
+					$jwbs['JWGMJRZL_OPTION'] = $JWGMJRZL_OPTION;
+					$jwbs['JWGMJRZL_BW'] = $JWGMJRZL_BW;
+					$jwbs['JWGMDQZL_OPTION'] = $JWGMDQZL_OPTION;
+					$jwbs->update();
+				}else {
+					$jwbsModel['CODE'] = $jcxx['CODE'];
+					$jwbsModel->setIsNewRecord(1);
+					$jwbsModel->save();
+				}
 
-			if ($zyqk = $zyqkModel->getRowByCode($code)) {
-				$zyqkModel['ID'] = $zyqk['ID'];
-				$zyqkModel['CODE'] = $zyqk['CODE'];
-				$zyqkModel['CREATE_TIME'] = $zyqk['CREATE_TIME'];
-				$zyqkModel->update();
-			}else {
-				$zyqkModel['CODE'] = $jcxx['CODE'];
-				$zyqkModel->setIsNewRecord(1);
-				$zyqkModel->save();
-			}
+				if ($yws = $ywsModel->getRowByCode($code))
+				{
+					$yws['ASPL_JWFY_OPTION'] = $ASPL_JWFY_OPTION;
+					$yws['ASPL_ZYQJ_OPTION'] = $ASPL_ZYQJ_OPTION;
+					$yws['ASPL_ZYQJ_WCL'] = $ASPL_ZYQJ_WCL;
+					$yws['ASPL_ZYQJ_WYHTYYY'] = $ASPL_ZYQJ_WYHTYYY ? join(',',$ASPL_ZYQJ_WYHTYYY) : '';
+					$yws['ASPL_ZYQJ_HYTY_FY'] = $ASPL_ZYQJ_HYTY_FY;
+					$yws['ASPL_ZYQJ_HYTY_YY'] = $ASPL_ZYQJ_HYTY_YY ? join(',',$ASPL_ZYQJ_HYTY_YY) : '';
+					$yws['LBGL_JWFY_OPTION'] = $LBGL_JWFY_OPTION;
+					$yws['LBGL_ZYQJ_OPTION'] = $LBGL_ZYQJ_OPTION;
+					$yws['LBGL_ZYQJ_WCL'] = $LBGL_ZYQJ_WCL;
+					$yws['LBGL_ZYQJ_WYHTYYY'] = $LBGL_ZYQJ_WYHTYYY ? join(',',$LBGL_ZYQJ_WYHTYYY) : '';
+					$yws['LBGL_ZYQJ_HYTY_FY'] = $LBGL_ZYQJ_HYTY_FY;
+					$yws['LBGL_ZYQJ_HYTY_YY'] = $LBGL_ZYQJ_HYTY_YY ? join(',',$LBGL_ZYQJ_HYTY_YY) : '';
+					$yws['ZSYKNYW_OPTION'] = $ZSYKNYW_OPTION;
+					$yws['ZSYKNYW_YWMC'] = $ZSYKNYW_YWMC ? join(',',$ZSYKNYW_YWMC) : '';
+					$yws['ZSYKNYW_JL'] = $ZSYKNYW_JL;
+					$yws['ZSYKNYW_YYCXSJ'] = $ZSYKNYW_YYCXSJ;
+					$yws['KFKNY_JWFY_OPTION'] = $KFKNY_JWFY_OPTION;
+					$yws['KFKNY_ZYQJ_OPTION'] = $KFKNY_ZYQJ_OPTION;
+					$yws['KFKNY_ZYQJ_YWZL'] = $KFKNY_ZYQJ_YWZL ? join(',',$KFKNY_ZYQJ_YWZL) : '';
+					$yws['KFKNY_ZYQJ_ZZ'] = $KFKNY_ZYQJ_ZZ ? join(',',$KFKNY_ZYQJ_ZZ) : '';
+					$yws['KFKNY_ZYQJ_INR'] = $KFKNY_ZYQJ_INR;
+					$yws['TTLYW_OPTION'] = $TTLYW_OPTION;
+					$yws['TTLYW_FHYW'] = $TTLYW_FHYW ? join(',',$TTLYW_FHYW) : '' ;
+					$yws['TTLYW_WCL'] = $TTLYW_WCL;
+					$yws['JYYW_OPTION'] = $JYYW_OPTION ? join(',',$JYYW_OPTION) : '';
+					$yws['QT_XSZLYW_JWFY_OPTION'] = $QT_XSZLYW_JWFY_OPTION;
+					$yws['QT_XSZLYW_ZYQJ_OPTION'] = $QT_XSZLYW_ZYQJ_OPTION;
+					$yws['QT_XSZLYW_MC'] = $QT_XSZLYW_MC;
+					$yws['QT_KXLSCYW_JWFY_OPTION'] = $QT_KXLSCYW_JWFY_OPTION;
+					$yws['QT_KXLSCYW_ZYQJ_OPTION'] = $QT_KXLSCYW_ZYQJ_OPTION;
+					$yws['QT_KXLSCYW_MC'] = $QT_KXLSCYW_MC;
+					$yws['QT_QGTJKJ_JWFY_OPTION'] = $QT_QGTJKJ_JWFY_OPTION;
+					$yws['QT_QGTJKJ_ZYQJ_OPTION'] = $QT_QGTJKJ_ZYQJ_OPTION;
+					$yws['QT_QGTJKJ_MC'] = $QT_QGTJKJ_MC;
+					$yws['QT_LLJ_JWFY_OPTION'] = $QT_LLJ_JWFY_OPTION;
+					$yws['QT_LLJ_ZYQJ_OPTION'] = $QT_LLJ_ZYQJ_OPTION;
+					$yws['QT_LLJ__MC'] = $QT_LLJ__MC;
+					$yws['QT_WSYZJ_JWFY_OPTION'] = $QT_WSYZJ_JWFY_OPTION;
+					$yws['QT_WSYZJ_ZYQJ_OPTION'] = $QT_WSYZJ_ZYQJ_OPTION;
+					$yws['QT_WSYZJ_MC'] = $QT_WSYZJ_MC;
+					$yws->update();
+				}else {
+					$ywsModel['CODE'] = $jcxx['CODE'];
+					$ywsModel->setIsNewRecord(1);
+					$ywsModel->save();
+				}
 
-			if ($dbz = $dbzModel->getRowByCode($code)) {
-				$dbzModel['ID'] = $dbz['ID'];
-				$dbzModel['CODE'] = $dbz['CODE'];
-				$dbzModel['CREATE_TIME'] = $dbz['CREATE_TIME'];
-				$dbzModel->update();
-			}else {
-				$dbzModel['CODE'] = $jcxx['CODE'];
-				$dbzModel->setIsNewRecord(1);
-				$dbzModel->save();
-			}
+				if ($sysjc = $sysjcModel->getRowByCode($code)) {
+					$sysjc['XCG_XX'] = $XCG_XX;
+					$sysjc['XCG_WBC'] = $XCG_WBC;
+					$sysjc['XCG_NEUT'] = $XCG_NEUT;
+					$sysjc['XCG_HGB'] = $XCG_HGB;
+					$sysjc['XCG_LYM'] = $XCG_LYM;
+					$sysjc['XCG_PLT'] = $XCG_PLT;
+					$sysjc['XCG_HCT'] = $XCG_HCT;
+					$sysjc['XSH_CRP'] = $XSH_CRP;
+					$sysjc['XSH_AST'] = $XSH_AST;
+					$sysjc['XSH_ALT'] = $XSH_ALT;
+					$sysjc['XSH_TBIL'] = $XSH_TBIL;
+					$sysjc['XSH_DBIL'] = $XSH_DBIL;
+					$sysjc['XSH_UA'] = $XSH_UA;
+					$sysjc['XSH_BUN'] = $XSH_BUN;
+					$sysjc['XSH_CR'] = $XSH_CR;
+					$sysjc['XSH_GYS'] = $XSH_GYS;
+					$sysjc['XSH_TG'] = $XSH_TG;
+					$sysjc['XSH_HDLC'] = $XSH_HDLC;
+					$sysjc['XSH_LDLC'] = $XSH_LDLC;
+					$sysjc['XSH_ZDGC'] = $XSH_ZDGC;
+					$sysjc['QTSHZB_ALB'] = $QTSHZB_ALB;
+					$sysjc['QTSHZB_THXHDB'] = $QTSHZB_THXHDB;
+					$sysjc['QTSHZB_XT'] = $QTSHZB_XT;
+					$sysjc['QTSHZB_DEJT'] = $QTSHZB_DEJT;
+					$sysjc['QTSHZB_FDP'] = $QTSHZB_FDP;
+					$sysjc['QTSHZB_XC'] = $QTSHZB_XC;
+					$sysjc['DJZ_K'] = $DJZ_K;
+					$sysjc['DJZ_NA'] = $DJZ_NA;
+					$sysjc['JG_FT3'] = $JG_FT3;
+					$sysjc['JG_TT3'] = $JG_TT3;
+					$sysjc['JG_TSH'] = $JG_TSH;
+					$sysjc['N_NWLBDB'] = $N_NWLBDB;
+					$sysjc['N_NDB'] = $N_NDB;
+					$sysjc['DBYX_DBYXSFYX'] = $DBYX_DBYXSFYX;
+					$sysjc['XJSSBZW_CKMB'] = $XJSSBZW_CKMB;
+					$sysjc['XJSSBZW_TNT'] = $XJSSBZW_TNT;
+					$sysjc['XJSSBZW_TNI'] = $XJSSBZW_TNI;
+					$sysjc['XSZB_BNP'] = $XSZB_BNP;
+					$sysjc['XZCC_LVEF'] = $XZCC_LVEF;
+					$sysjc['XZCC_ZSSZMNJZ'] = $XZCC_ZSSZMNJZ;
+					$sysjc['XZCC_YS'] = $XZCC_YS;
+					$sysjc['XZCC_ZF'] = $XZCC_ZF;
+					$sysjc['XZCC_YF'] = $XZCC_YF;
+					$sysjc['XZCC_FS'] = $XZCC_FS;
+					$sysjc['XZCC_FDMSSY'] = $XZCC_FDMSSY;
+					$sysjc->update();
+				}else {
+					$sysjcModel['CODE'] = $jcxx['CODE'];
+					$sysjcModel->setIsNewRecord(1);
+					$sysjcModel->save();
+				}
 
-			if ($sfzdsj = $sfzdsjModel->getRowByCode($code)) {
-				$sfzdsjModel['ID'] = $sfzdsj['ID'];
-				$sfzdsjModel['CODE'] = $sfzdsj['CODE'];
-				$sfzdsjModel['CREATE_TIME'] = $sfzdsj['CREATE_TIME'];
-				$sfzdsjModel->update();
-			}else {
-				$sfzdsjModel['CODE'] = $jcxx['CODE'];
-				$sfzdsjModel->setIsNewRecord(1);
-				$sfzdsjModel->save();
-			}
+				if ($zyqk = $zyqkModel->getRowByCode($code)) {
+					$zyqk['RYTZ_XY_SSY'] = $RYTZ_XY_SSY;
+					$zyqk['RYTZ_XY_SZY'] = $RYTZ_XY_SZY;
+					$zyqk['RYTZ_XL_JXXL'] = $RYTZ_XL_JXXL;
+					$zyqk['RYTZ_XL_FC_OPTION'] = $RYTZ_XL_FC_OPTION;
+					$zyqk['CYZT_OPTION'] = $CYZT_OPTION;
+					$zyqk['ZYTS'] = $ZYTS;
+					$zyqk['CYZD_OPTION'] = $CYZD_OPTION;
+					$zyqk['CYZD_QT'] = $CYZD_QT;
+					$zyqk['CYDY_OPTION'] = $CYDY_OPTION ? join(',',$CYDY_OPTION) : '';
+					$zyqk['CYDY_MC'] = $CYDY_MC;
+					$zyqk['CYDY_YF'] = $CYDY_YF;
+					$zyqk['CYDY_SFQJYWBH'] = $CYDY_SFQJYWBH;
+					$zyqk->update();
+				}else {
+					$zyqkModel['CODE'] = $jcxx['CODE'];
+					$zyqkModel->setIsNewRecord(1);
+					$zyqkModel->save();
+				}
 
+				if ($dbz = $dbzModel->getRowByCode($code)) {
+					$dbz['XS_BY_OPTION'] = $XS_BY_OPTION;
+					$dbz['XS_BY_QT'] = $XS_BY_QT;
+					$dbz['XS_LX_OPTION'] = $XS_LX_OPTION;
+					$dbz['XS_OPTION'] = $XS_OPTION;
+					$dbz['XS_XGN_OPTION'] = $XS_XGN_OPTION;
+					$dbz['XS_YWSY_LNJ_OPTION'] = $XS_YWSY_LNJ_OPTION;
+					$dbz['XS_YWSY_B_OPTION'] = $XS_YWSY_B_OPTION;
+					$dbz['XS_YWSY_ACEI_OPTION'] = $XS_YWSY_ACEI_OPTION;
+					$dbz['XS_YWSY_LNZ_OPTION'] = $XS_YWSY_LNZ_OPTION;
+					$dbz['XS_YWSY_DGX_OPTION'] = $XS_YWSY_DGX_OPTION;
+					$dbz['XS_YWSY_GLZJKJ_OPTION'] = $XS_YWSY_GLZJKJ_OPTION;
+					$dbz['XG_KILLIP_OPTION'] = $XG_KILLIP_OPTION;
+					$dbz['XG_BW'] = $XG_BW ? join(',',$XG_BW) : '';
+					$dbz['XG_LX'] = $XG_LX;
+					$dbz['XG_SFJZJRZL_OPTION'] = $XG_SFJZJRZL_OPTION;
+					$dbz['XG_MZSJ'] = $XG_MZSJ;
+					$dbz['XG_FMC'] = $XG_FMC;
+					$dbz['XG_SS_LM_CD'] = $XG_SS_LM_CD;
+					$dbz['XG_SS_LM_ZJLX'] = $XG_SS_LM_ZJLX;
+					$dbz['XG_SS_LM_DX'] = $XG_SS_LM_DX;
+					$dbz['XG_SS_LAD_CD'] = $XG_SS_LAD_CD;
+					$dbz['XG_SS_LAD_ZJLX'] = $XG_SS_LAD_ZJLX;
+					$dbz['XG_SS_LAD_DX'] = $XG_SS_LAD_DX;
+					$dbz['XG_SS_RCA_CD'] = $XG_SS_RCA_CD;
+					$dbz['XG_SS_RCA_ZJLX'] = $XG_SS_RCA_ZJLX;
+					$dbz['XG_SS_RCA_DX'] = $XG_SS_RCA_DX;
+					$dbz['XG_SS_LCX_CD'] = $XG_SS_LCX_CD;
+					$dbz['XG_SS_LCX_ZJLX'] = $XG_SS_LCX_ZJLX;
+					$dbz['XG_SS_LCX_DX'] = $XG_SS_LCX_DX;
+					$dbz['XG_SS_DIA_CD'] = $XG_SS_DIA_CD;
+					$dbz['XG_SS_DIA_ZJLX'] = $XG_SS_DIA_ZJLX;
+					$dbz['XG_SS_DIA_DX'] = $XG_SS_DIA_DX;
+					$dbz['XG_SS_OM_CD'] = $XG_SS_OM_CD;
+					$dbz['XG_SS_OM_ZJLX'] = $XG_SS_OM_ZJLX;
+					$dbz['XG_SS_OM_DX'] = $XG_SS_OM_DX;
+					$dbz['XG_SS_PDA_CD'] = $XG_SS_PDA_CD;
+					$dbz['XG_SS_PDA_ZJLX'] = $XG_SS_PDA_ZJLX;
+					$dbz['XG_SS_PDA_DX'] = $XG_SS_PDA_DX;
+					$dbz['XG_SS_PLA_CD'] = $XG_SS_PLA_CD;
+					$dbz['XG_SS_PLA_ZJLX'] = $XG_SS_PLA_ZJLX;
+					$dbz['XG_SS_PLA_DX'] = $XG_SS_PLA_DX;
+					$dbz['XG_SS_QT_TEXT'] = $XG_SS_QT_TEXT;
+					$dbz['XG_SS_QT_CD'] = $XG_SS_QT_CD;
+					$dbz['XG_SS_QT_ZJLX'] = $XG_SS_QT_ZJLX;
+					$dbz['XG_SS_QT_DX'] = $XG_SS_QT_DX;
+					$dbz['SP_LX_OPTION'] = $SP_LX_OPTION;
+					$dbz['SP_SSSJ'] = $SP_SSSJ;
+					$dbz['SP_SSFF_OPTION'] = $SP_SSFF_OPTION;
+					$dbz['SP_YYWC_OPTION'] = $SP_YYWC_OPTION;
+					$dbz['SP_YYWC_YW'] = $SP_YYWC_YW;
+					$dbz['QBQ_ZRYY_OPTION'] = $QBQ_ZRYY_OPTION;
+					$dbz['QBQ_LX_OPTION'] = $QBQ_LX_OPTION;
+					$dbz['QBQ_SSSJ'] = $QBQ_SSSJ;
+					$dbz['QBQ_CQSFYY'] = $QBQ_CQSFYY;
+					$dbz['QBQ_XLSCYY'] = $QBQ_XLSCYY;
+					$dbz['QBQ_SFQJ_YJFZ_OPTION'] = $QBQ_SFQJ_YJFZ_OPTION;
+					$dbz['QBQ_SFQJ_ICD_OPTION'] = $QBQ_SFQJ_ICD_OPTION;
+					$dbz['QBQ_SFQJ_GNYC_OPTION'] = $QBQ_SFQJ_GNYC_OPTION;
+					$dbz['QBQ_SFQJ_SFGZ_OPTION'] = $QBQ_SFQJ_SFGZ_OPTION;
+					$dbz->update();
+				}else {
+					$dbzModel['CODE'] = $jcxx['CODE'];
+					$dbzModel->setIsNewRecord(1);
+					$dbzModel->save();
+				}
+
+				if ($sfzdsj = $sfzdsjModel->getRowByCode($code)) {
+					$sfzdsj['SW_OPTION'] = $SW_OPTION;
+					$sfzdsj['SW_YY_OPTION'] = $SW_YY_OPTION;
+					$sfzdsj['ZZ_OPTION'] = $ZZ_OPTION;
+					$sfzdsj['ZZ_YY_OPTION'] = $ZZ_YY_OPTION;
+					$sfzdsj['XS_OPTION'] = $XS_OPTION;
+					$sfzdsj['CX_OPTION'] = $CX_OPTION;
+					$sfzdsj['CX_LX_OPTION'] = $CX_LX_OPTION;
+					$sfzdsj['CX_BW'] = $CX_BW;
+					$sfzdsj['CX_SFSX_OPTION'] = $CX_SFSX_OPTION;
+					$sfzdsj['XJGS_OPTION'] = $XJGS_OPTION;
+					$sfzdsj['ZZY_OPTION'] = $ZZY_OPTION;
+					$sfzdsj['ZZY_ZYCS'] = $ZZY_ZYCS;
+					$sfzdsj['XLSC_OPTION'] = $XLSC_OPTION;
+					$sfzdsj->update();
+				}else {
+					$sfzdsjModel['CODE'] = $jcxx['CODE'];
+					$sfzdsjModel->setIsNewRecord(1);
+					$sfzdsjModel->save();
+				}
+				$transaction->commit();
+			} catch (Exception $e) {
+				$this->log_info($e);
+				$transaction->rollback();
+				$this->_output(-1, '保存数据失败，请稍后重试');
+			}
 
 		}
 		// 新增
@@ -832,12 +1124,16 @@ class PatientController extends Admin
 				$sfzdsjModel['CODE'] = $jcxxModel['CODE'];
 				$sfzdsjModel->setIsNewRecord(1);
 				$sfzdsjModel->save();
+
+				$transaction->commit();
 			} catch (Exception $e) {
-					$this->_output(-1, '保存数据失败，请稍后重试');
+				$this->log_info($e);
+				$transaction->rollback();
+				$this->_output(-1, '保存数据失败，请稍后重试');
 			}
 		}
-
-		$this->redirect(Yii::app()->getBaseUrl()."/admin/patient/list");
+		$this->_output(0, '保存数据成功');
+		// $this->redirect(Yii::app()->getBaseUrl()."/admin/patient/list");
 	}
 
 	//上传图片
@@ -876,16 +1172,23 @@ class PatientController extends Admin
 		$dbzModel = new DbzModel();
 		$sfzdsjModel = new SfzdsjModel();
 
-
-		$jcxxModel->deleteByCode($code);
-		$jwbsModel->deleteByCode($code);
-		$ywsModel->deleteByCode($code);
-		$sysjcModel->deleteByCode($code);
-		$zyqkModel->deleteByCode($code);
-		$dbzModel->deleteByCode($code);
-		$sfzdsjModel->deleteByCode($code);
-
-		$this->redirect(Yii::app()->getBaseUrl()."/admin/patient/list");
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$jcxxModel->deleteByCode($code);
+			$jwbsModel->deleteByCode($code);
+			$ywsModel->deleteByCode($code);
+			$sysjcModel->deleteByCode($code);
+			$zyqkModel->deleteByCode($code);
+			$dbzModel->deleteByCode($code);
+			$sfzdsjModel->deleteByCode($code);
+			$transaction->commit();
+		} catch (Exception $e) {
+			$this->log_info($e);
+			$transaction->rollback();
+			$this->_output(-1, '删除数据失败，请稍后重试');
+		}
+		$this->_output(0, '成功');
+		// $this->redirect(Yii::app()->getBaseUrl()."/admin/patient/list");
 	}
 
 	// 删除图片

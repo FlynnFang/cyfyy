@@ -82,4 +82,16 @@ class Controller extends CController
 	{
 
 	}
+
+	protected function log_info($e)
+	{
+		Yii::log(print_r($e, true), CLogger::LEVEL_INFO, "application.controller.*");
+	}
+
+	protected function log_debug($e)
+	{
+		Yii::log(print_r($this->_result, true), CLogger::LEVEL_DEBUG, "application.controller.*");
+	}
+
+
 }

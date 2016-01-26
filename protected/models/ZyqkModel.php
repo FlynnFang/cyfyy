@@ -5,20 +5,25 @@
  * @author flynn
  *
  */
-class ZyqkModel extends BaseModel
+class ZyqkModel extends CActiveRecord
 {
 	private $TABLE_NAME = 'ZYQK';
 
-	public function __construct()
+	public static function model($className=__CLASS__)
 	{
-			parent::__construct($this->TABLE_NAME, __CLASS__);
+	    return parent::model($className);
+	}
+
+	public function tableName()
+	{
+		return $this->TABLE_NAME;
 	}
 
 	public function getRowByCode($code)
 	{
 		$c =  new CDbCriteria();
 		$c->addColumnCondition(array('CODE' => $code, ));
-		return $this->getRow($c);
+		return $this->find($c);
 	}
 
 	public function deleteByCode($code)

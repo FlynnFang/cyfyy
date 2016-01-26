@@ -21,13 +21,13 @@ class DashboardController extends Admin
 		}
 
 		$hospitalModel = new ConfigModel();
-		$allHos = $hospitalModel->getSetByType(Yii::app()->params['configType']['hospital']);
+		$allHos = $hospitalModel->getSetByType(Yii::app()->params['configType']['HOSPITAL']);
 
 		$hospitals = $allHos;
 		//查询
 		$c =  new CDbCriteria();
 		if ($this->_userInfo['role'] > 0) {
-			$c->addInCondition('hospital', $inArray);
+			$c->addInCondition('HOSPITAL', $inArray);
 			$hospitals = array();
 			foreach ($inArray as $value) {
 				$hospitals[$value] = $allHos[$value];

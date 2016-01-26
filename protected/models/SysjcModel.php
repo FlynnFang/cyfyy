@@ -5,13 +5,18 @@
  * @author flynn
  *
  */
-class SysjcModel extends BaseModel
+class SysjcModel extends CActiveRecord
 {
 	private $TABLE_NAME = 'SYSJC';
 
-	public function __construct()
+	public static function model($className=__CLASS__)
 	{
-			parent::__construct($this->TABLE_NAME, __CLASS__);
+	    return parent::model($className);
+	}
+
+	public function tableName()
+	{
+		return $this->TABLE_NAME;
 	}
 
 
@@ -19,7 +24,7 @@ class SysjcModel extends BaseModel
 	{
 		$c =  new CDbCriteria();
 		$c->addColumnCondition(array('CODE' => $code, ));
-		return $this->getRow($c);
+		return $this->find($c);
 	}
 
 	public function deleteByCode($code)

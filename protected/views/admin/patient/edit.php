@@ -881,7 +881,7 @@
                     </a>
                   </h4>
                 </div>
-                <div id="yws-qt" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="yws-qt-heading">
+                <div id="yws-qt" class="panel-collapse collapse" role="tabpanel" aria-labelledby="yws-qt-heading">
                   <div class="panel-body">
                     <table class="table table-hover">
                       <thead>
@@ -1234,7 +1234,7 @@
                     </a>
                   </h4>
                 </div>
-                <div id="sysjc-n" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="sysjc-n-heading">
+                <div id="sysjc-n" class="panel-collapse collapse" role="tabpanel" aria-labelledby="sysjc-n-heading">
                   <div class="panel-body">
 
                     <div class="form-group">
@@ -1263,7 +1263,7 @@
                     </a>
                   </h4>
                 </div>
-                <div id="sysjc-dbyx" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="sysjc-dbyx-heading">
+                <div id="sysjc-dbyx" class="panel-collapse collapse" role="tabpanel" aria-labelledby="sysjc-dbyx-heading">
                   <div class="panel-body">
 
                     <div class="form-group">
@@ -1285,7 +1285,7 @@
                     </a>
                   </h4>
                 </div>
-                <div id="sysjc-xjssbzw" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="sysjc-xjssbzw-heading">
+                <div id="sysjc-xjssbzw" class="panel-collapse collapse" role="tabpanel" aria-labelledby="sysjc-xjssbzw-heading">
                   <div class="panel-body">
 
                     <div class="form-group">
@@ -1321,7 +1321,7 @@
                     </a>
                   </h4>
                 </div>
-                <div id="sysjc-xszb" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="sysjc-xszb-heading">
+                <div id="sysjc-xszb" class="panel-collapse collapse" role="tabpanel" aria-labelledby="sysjc-xszb-heading">
                   <div class="panel-body">
 
                     <div class="form-group">
@@ -1343,7 +1343,7 @@
                     </a>
                   </h4>
                 </div>
-                <div id="sysjc-xzcc" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="sysjc-xzcc-heading">
+                <div id="sysjc-xzcc" class="panel-collapse collapse" role="tabpanel" aria-labelledby="sysjc-xzcc-heading">
                   <div class="panel-body">
 
                     <div class="form-group">
@@ -1914,7 +1914,7 @@
                       <label for="SP_SSSJ" class="col-sm-2 control-label">手术时间</label>
                       <div class="col-sm-4">
                         <div class="input-group date">
-                        <input class="form-control" type="text"  name="SP_SSSJ" id="SP_SSSJ" value="<?php echo $dbz['SP_SSSJ'] ? date('Y-m-d',$dbz['CSRQ']) :'';?>" required >
+                        <input class="form-control" type="text"  name="SP_SSSJ" id="SP_SSSJ" value="<?php echo $dbz['SP_SSSJ'] ? date('Y-m-d',$dbz['SP_SSSJ']) :'';?>" required >
                         <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                         </div>
                       </div>
@@ -2327,7 +2327,7 @@
     // e.target // newly activated tab
     // e.relatedTarget // previous active tab
     // console.log(e);
-    var index = $('a[href=' + e.target.hash + ']').data("index");
+    var index = $(this).data("index");
     $(window).data("tabIndex", index);
     if (e.target.hash == '#sfzdsj') {
       $('#submit').text('提交');
@@ -2340,34 +2340,29 @@
 
   $('#submit').click(function(e){
     e.preventDefault();
+    var tabIndex = $(window).data("tabIndex");
     if(!validator.element('#NAME') || !validator.element('#ZJHM') || !validator.element('#ZYH') || !validator.element('#TEL1') || !validator.element('#HOME_ADDR')){
       return false;
     }
-
-    var tabIndex = $(window).data("tabIndex");
-    switch (tabIndex) {
-      case 0:
-
-        break;
-      default:
-
-    }
-
-    if (tabIndex < $('#main-tablist li').length) {
-      tabIndex++;
-    }
-
-    $('#main-tablist li:eq('+ tabIndex +') a').tab('show');
-    $(window).data("tabIndex",tabIndex);
-
     if($(this).attr("type") == "submit"){
       var action = $("form").attr("action");
       $.post(action, $("form").serialize(), function(response){
         if (response.errcode != 0) {
           alert(response.errmsg);
+          return;
         }
-      },"JSON");
+        location.href = 'list';
+      },"JSON").fail(function(){
+        alert('后端服务器异常');
+      });
     }
+
+    if (tabIndex < $('#main-tablist li').length) {
+      tabIndex++;
+    }
+    $('#main-tablist li:eq('+ tabIndex +') a').tab('show');
+    $(window).data("tabIndex",tabIndex);
+
     return false;
 
   });

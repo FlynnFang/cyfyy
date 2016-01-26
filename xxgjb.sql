@@ -11,40 +11,11 @@
  Target Server Version : 50624
  File Encoding         : utf-8
 
- Date: 01/25/2016 08:51:02 AM
+ Date: 01/26/2016 16:53:00 PM
 */
 
 SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
---  Table structure for `JCXX`
--- ----------------------------
-DROP TABLE IF EXISTS `JCXX`;
-CREATE TABLE `JCXX` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `CODE` varchar(32) NOT NULL COMMENT '受试者编号',
-  `NAME` varchar(255) DEFAULT NULL COMMENT '姓名',
-  `HOSPITAL` varchar(32) NOT NULL COMMENT '归属医院',
-  `ZJLX` varchar(4) NOT NULL COMMENT '证件类型',
-  `ZJHM` varchar(255) NOT NULL COMMENT '证件号码',
-  `ZYH` varchar(255) NOT NULL COMMENT '住院号',
-  `RYSJ` varchar(16) NOT NULL COMMENT '入院时间',
-  `CYSJ` varchar(16) NOT NULL COMMENT '出院时间',
-  `SFRQ` varchar(16) NOT NULL COMMENT '随访日期',
-  `SEX` varchar(4) NOT NULL COMMENT '性别',
-  `AGE` varchar(4) NOT NULL COMMENT '年龄',
-  `HEIGHT` varchar(4) NOT NULL COMMENT '身高',
-  `WEIGHT` varchar(4) NOT NULL COMMENT '体重',
-  `BMI` varchar(16) NOT NULL COMMENT 'BMI',
-  `TEL1` varchar(16) NOT NULL COMMENT '联系电话1',
-  `TEL2` varchar(16) NOT NULL COMMENT '联系电话2',
-  `HOME_ADDR` varchar(500) NOT NULL COMMENT '家庭住址',
-  `COMPANY_ADDR` varchar(500) NOT NULL COMMENT '工作单位',
-  `XL` varchar(4) NOT NULL COMMENT '学历',
-  `CREATE_TIME` int(11) NOT NULL COMMENT '记录时间',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基础信息';
 
 -- ----------------------------
 --  Table structure for `DBZ`
@@ -53,7 +24,7 @@ DROP TABLE IF EXISTS `DBZ`;
 CREATE TABLE `DBZ` (
   `ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `CODE` varchar(32) NOT NULL COMMENT '病人CODE',
-  `XS_BY_OPTION` varchar(4) NOT NULL COMMENT '心衰 病因 高血压  心脏瓣膜病  扩心病 冠心病 其他（   ）（单选） ',
+  `XS_BY_OPTION` varchar(4) NOT NULL COMMENT '心衰 病因 高血压  心脏瓣膜病  扩心病 冠心病 其他 ',
   `XS_BY_QT` varchar(255) NOT NULL COMMENT '其他（   ）',
   `XS_LX_OPTION` varchar(4) NOT NULL COMMENT '类型：收缩型 舒张型  （单选',
   `XS_OPTION` varchar(4) NOT NULL COMMENT '左心衰 右心衰 全心衰 （单选',
@@ -114,7 +85,50 @@ CREATE TABLE `DBZ` (
   `QBQ_SFQJ_SFGZ_OPTION` varchar(4) NOT NULL COMMENT '（感知  起搏）异常',
   `CREATE_TIME` int(11) NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='单病种';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='单病种';
+
+-- ----------------------------
+--  Records of `DBZ`
+-- ----------------------------
+BEGIN;
+INSERT INTO `DBZ` VALUES ('1', '201601260001', '2', '', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', '0', '', '', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '', '1970-01-01', '0', '0', '123', '1', '1', '1970-01-01', '123', '0', '0', '0', '0', '0', '1453771635'), ('2', '201601260002', '', '123', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', '0', '123', '123', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '测试', '', '', '0', '0', '测试', '1', '1', '', '测试', '0', '0', '0', '0', '0', '1453797811');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `JCXX`
+-- ----------------------------
+DROP TABLE IF EXISTS `JCXX`;
+CREATE TABLE `JCXX` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `CODE` varchar(32) NOT NULL COMMENT '受试者编号',
+  `NAME` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `HOSPITAL` varchar(32) NOT NULL COMMENT '归属医院',
+  `ZJLX` varchar(4) NOT NULL COMMENT '证件类型',
+  `ZJHM` varchar(255) NOT NULL COMMENT '证件号码',
+  `ZYH` varchar(255) NOT NULL COMMENT '住院号',
+  `RYSJ` varchar(16) NOT NULL COMMENT '入院时间',
+  `CYSJ` varchar(16) NOT NULL COMMENT '出院时间',
+  `SFRQ` varchar(16) NOT NULL COMMENT '随访日期',
+  `SEX` varchar(4) NOT NULL COMMENT '性别',
+  `AGE` varchar(4) NOT NULL COMMENT '年龄',
+  `HEIGHT` varchar(4) NOT NULL COMMENT '身高',
+  `WEIGHT` varchar(4) NOT NULL COMMENT '体重',
+  `BMI` varchar(16) NOT NULL COMMENT 'BMI',
+  `TEL1` varchar(16) NOT NULL COMMENT '联系电话1',
+  `TEL2` varchar(16) NOT NULL COMMENT '联系电话2',
+  `HOME_ADDR` varchar(500) NOT NULL COMMENT '家庭住址',
+  `COMPANY_ADDR` varchar(500) NOT NULL COMMENT '工作单位',
+  `XL` varchar(4) NOT NULL COMMENT '学历',
+  `CREATE_TIME` int(11) NOT NULL COMMENT '记录时间',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='基础信息';
+
+-- ----------------------------
+--  Records of `JCXX`
+-- ----------------------------
+BEGIN;
+INSERT INTO `JCXX` VALUES ('1', '201601260001', '123', '1', '1', '123', '123', '1970-01-01', '1970-01-01', '', '1', '', '', '', '0', '123', '123', '123', '123', '1', '1453771635'), ('2', '201601260002', '测试', '1', '1', '测试', '测试', '', '', '', '1', '123', '123', '123', '81.30081300813', '测试', '测试', '测试', '测试', '1', '1453797810');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `JWBS`
@@ -161,7 +175,14 @@ CREATE TABLE `JWBS` (
   `JWGMDQZL_OPTION` varchar(4) NOT NULL COMMENT '既往冠脉搭桥治疗：',
   `CREATE_TIME` int(11) NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='既往病史';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='既往病史';
+
+-- ----------------------------
+--  Records of `JWBS`
+-- ----------------------------
+BEGIN;
+INSERT INTO `JWBS` VALUES ('1', '201601250001', '1', '', '', '1', '', '', '0', '0', '', '0', '321', '0', '', '0', '321', '0', '1', '', '0', '321', '0', '', '0', '321', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '1', '0', '1453716714'), ('4', '201601260001', '1', '', '', '1', '23', '123', '0', '0', '', '0', '', '0', '', '0', '', '0', '1', '', '0', '123', '0', '125', '0', '12', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '1', '0', '1453796254'), ('5', '201601260002', '1', '', '', '1', '123', '123', '0', '0', '123', '0', '测试', '0', '123', '0', '测试', '0', '1', '123', '0', '测试', '0', '123', '0', '测试', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '1', '0', '1453797810');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `SFZDSJ`
@@ -185,7 +206,14 @@ CREATE TABLE `SFZDSJ` (
   `XLSC_OPTION` varchar(4) NOT NULL COMMENT '心律失常（随访过程中发生）',
   `CREATE_TIME` int(11) NOT NULL COMMENT '记录创建日期',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='随访终点事件';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='随访终点事件';
+
+-- ----------------------------
+--  Records of `SFZDSJ`
+-- ----------------------------
+BEGIN;
+INSERT INTO `SFZDSJ` VALUES ('1', '201601260001', '1', '', '1', '0', '0', '0', '0', '123', '0', '0', '0', '', '0', '1453771635'), ('2', '201601260002', '0', '1', '0', '0', '0', '0', '0', '测试', '0', '0', '0', '123', '0', '1453797811');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `SYSJC`
@@ -241,7 +269,14 @@ CREATE TABLE `SYSJC` (
   `XZCC_FDMSSY` varchar(255) NOT NULL COMMENT '肺动脉收缩压：',
   `CREATE_TIME` int(11) NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `SYSJC`
+-- ----------------------------
+BEGIN;
+INSERT INTO `SYSJC` VALUES ('1', '201601260001', '3', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '1453771635'), ('2', '201601260002', '0', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '123', '1453797811');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `YWS`
@@ -292,7 +327,14 @@ CREATE TABLE `YWS` (
   `QT_WSYZJ_MC` varchar(255) NOT NULL COMMENT '胃酸抑制剂 种类',
   `CREATE_TIME` int(11) NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `YWS`
+-- ----------------------------
+BEGIN;
+INSERT INTO `YWS` VALUES ('1', '201601260001', '0', '0', '', '1,2,4,5,6,7', '', '', '0', '0', '', '', '', '', '0', '', '0', '123', '0', '0', '', '', '0', '0', '', '', '', '0', '0', '', '0', '0', '', '0', '0', '', '0', '0', '', '0', '0', '', '1453771635'), ('2', '201601260002', '0', '0', '', '', '123', '', '0', '0', '', '', '123', '', '0', '', '0', '测试', '0', '0', '', '', '0', '0', '', '123', '', '0', '0', '', '0', '0', '', '0', '0', '', '0', '0', '', '0', '0', '', '1453797811');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `ZYQK`
@@ -315,7 +357,14 @@ CREATE TABLE `ZYQK` (
   `CYDY_SFQJYWBH` varchar(500) NOT NULL COMMENT '随访期间的药物变化',
   `CREATE_TIME` int(11) NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='住院情况';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='住院情况';
+
+-- ----------------------------
+--  Records of `ZYQK`
+-- ----------------------------
+BEGIN;
+INSERT INTO `ZYQK` VALUES ('1', '201601260001', '', '', '', '0', '0', '', '1', '123', '', '123', '123', '123', '1453771635'), ('2', '201601260002', '123', '123', '123', '0', '0', '123', '1', '测试', '', '测试', '测试', '测试', '1453797811');
+COMMIT;
 
 -- ----------------------------
 --  Table structure for `admin`
@@ -337,7 +386,7 @@ CREATE TABLE `admin` (
 --  Records of `admin`
 -- ----------------------------
 BEGIN;
-INSERT INTO `admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1', '0', '0', '0', '1453459444'), ('4', 'herbre', 'e10adc3949ba59abbe56e057f20f883e', '2', '1', '1437401873', '0', '1437791124');
+INSERT INTO `admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1', '0', '0', '0', '1453770583'), ('4', 'herbre', 'e10adc3949ba59abbe56e057f20f883e', '2', '1', '1437401873', '0', '1437791124');
 COMMIT;
 
 -- ----------------------------
@@ -370,7 +419,7 @@ CREATE TABLE `menu` (
   `name` varchar(50) NOT NULL COMMENT '菜单显示名称',
   `url` text NOT NULL COMMENT '菜单链接',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Records of `menu`
@@ -408,6 +457,6 @@ CREATE TABLE `share` (
   `target_hospital` varchar(4) NOT NULL COMMENT '病历分享到医院',
   `permission` varchar(10) NOT NULL COMMENT '病历分享到医院所拥有权限',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='病历分享表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='病历分享表';
 
 SET FOREIGN_KEY_CHECKS = 1;

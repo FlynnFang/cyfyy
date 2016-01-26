@@ -5,34 +5,32 @@
  * @author flynn
  *
  */
-class JcxxModel extends BaseModel
+class JcxxModel extends CActiveRecord
 {
 	private $TABLE_NAME = 'JCXX';
 
-	public function __construct()
+	public static function model($className=__CLASS__)
 	{
-			parent::__construct($this->TABLE_NAME, __CLASS__);
+	    return parent::model($className);
 	}
 
-	// public function relations()
-	// {
-	// 	return array(
-	// 		'operation'=>array(self::HAS_ONE, 'OperationModel', 'patient_code',),
-	// 	);
-	// }
+	public function tableName()
+	{
+		return $this->TABLE_NAME;
+	}
 
 	public function getRowByCode($code)
 	{
 		$c =  new CDbCriteria();
 		$c->addColumnCondition(array('CODE' => $code, ));
-		return $this->getRow($c);
+		return $this->find($c);
 	}
 
 	public function getMaxPatientCode()
 	{
 		$c =  new CDbCriteria();
 		$c->order = ('CODE desc');
-		return $this->getRow($c);
+		return $this->find($c);
 	}
 
 	public function deleteByCode($code)
