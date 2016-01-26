@@ -753,3 +753,10 @@ in /data/php/projects/cyfyy/index.php (14)
 in /data/php/projects/cyfyy/protected/components/Controller.php (23)
 in /data/php/projects/cyfyy/protected/controllers/admin/PatientController.php (13)
 in /data/php/projects/cyfyy/index.php (14)
+2016/01/26 17:13:29 [info] [application.controller.*] 
+
+
+############Req url from Controller############:
+ /admin/dashboard/
+in /data/php/projects/cyfyy/protected/components/Controller.php (23)
+in /data/php/projects/cyfyy/index.php (14)

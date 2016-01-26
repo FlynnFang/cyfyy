@@ -36,21 +36,21 @@ class DashboardController extends Admin
 		$hospitalModel = new ConfigModel();
 		$hospitals = $hospitalModel->getSetByType(Yii::app()->params['configType']['HOSPITAL']);
 
-		// $patientModel = new PatientModel();
-		// //总数
-		// $total = $patientModel->count($c);
-		// $totals = $patientModel->getPatientGroupTotal();
-		// $data = array();
-		// if ($totals) {
-		// 	foreach ($totals as $value) {
-		// 		$item = array();
-		// 		$item['value'] = $value['total'];
-		// 		$item['label'] = $hospitals[$value['hospital']];
-		// 		$item['color'] ='#F7464A';
-		// 		$item['highlight'] ='#FF5A5E';
-		// 		$data[] = $item;
-		// 	}
-		// }
+		$jcxxModel = new JcxxModel();
+		//总数
+		$total = $jcxxModel->count($c);
+		$totals = $jcxxModel->getPatientGroupTotal();
+		$data = array();
+		if ($totals) {
+			foreach ($totals as $value) {
+				$item = array();
+				$item['value'] = $value['total'];
+				$item['label'] = $hospitals[$value['hospital']];
+				$item['color'] ='#F7464A';
+				$item['highlight'] ='#FF5A5E';
+				$data[] = $item;
+			}
+		}
 
 		$this->render('index',array('userinfo' => $this->_userInfo, 'total' => $total,'data' => json_encode($data), 'hospitals' => $hospitals));
 	}

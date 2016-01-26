@@ -42,12 +42,12 @@ class JcxxModel extends CActiveRecord
 		return $this->deleteAll($condition,$params);
 	}
 	//
-	// public function getPatientGroupTotal()
-	// {
-	// 	$sql = "SELECT hospital,count(1) 'total' FROM `patient` GROUP BY `hospital`;";
-	// 	$db = Yii::app()->db;
-	// 	return $db->createCommand($sql)->queryAll();
-	// }
+	public function getPatientGroupTotal()
+	{
+		$sql = "SELECT HOSPITAL,count(1) 'total' FROM `JCXX` GROUP BY `HOSPITAL`;";
+		$db = Yii::app()->db;
+		return $db->createCommand($sql)->queryAll();
+	}
 
 
 }
